@@ -1,8 +1,9 @@
 const express = require('express')
+const morgan = require('morgan')
 const app = express()
 
 app.use(express.json()) //json parser
-
+app.use(morgan('common'))
 let currentTime = new Date()
 
 let persons = [
