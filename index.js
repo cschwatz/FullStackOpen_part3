@@ -52,7 +52,18 @@ app.get('/api/persons/:id', (request, response) => {
 })
 
 app.post('/api/persons', (request, response) => {
-    console.log(request.body)
+    if (!request.body.name || !request.body.number) {
+        return response.status(400).json({
+            error: "content missing"
+        })
+    }
+
+    if (persons.find(person => person.name === request.body.name)) {
+        return response.status(400).json({
+            error: "the name is already in the Phonebook"
+        })
+    }
+
     let newPersonId = Math.floor(Math.random() * 100000)
     const person = {
         "id": newPersonId,
