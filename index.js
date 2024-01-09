@@ -3,7 +3,11 @@ const morgan = require('morgan')
 const app = express()
 
 app.use(express.json()) //json parser
-app.use(morgan('common'))
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :jsonBody'))
+morgan.token('jsonBody', (req, res) => { 
+    return JSON.stringify(req.body) 
+})
+
 let currentTime = new Date()
 
 let persons = [
