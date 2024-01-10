@@ -8,6 +8,8 @@ morgan.token('jsonBody', (req, res) => {
     return JSON.stringify(req.body) 
 })
 
+app.use(express.static('dist'))
+
 let currentTime = new Date()
 
 let persons = [
