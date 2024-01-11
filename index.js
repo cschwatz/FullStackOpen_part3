@@ -19,8 +19,6 @@ const unknownEndpoint = (request, response) => {
     response.status(404).send({error: 'unknown endpoint'})
 }
 
-app.use(unknownEndpoint)
-
 const errorHandler = (error, request, response, next) => {
     console.log(error.message)
     if (error.name === 'CastError') {
@@ -29,7 +27,6 @@ const errorHandler = (error, request, response, next) => {
     next(error)
 }
 
-app.use(errorHandler)
 
 app.get('/api/persons', (request, response) => {
     Person.find({}).then(result => response.json(result))
@@ -54,11 +51,6 @@ app.get('/api/persons/:id', (request, response, next) => {
             }
         })
         .catch(error => next(error))
-    // const idToFind = Number(request.params.id) // request parameters returns a string type
-    // Person.find({id: idToFind})
-    //     .then(result => response.json(result))
-    //     .catch(error => next(error))
-    
 })
 
 app.post('/api/persons', (request, response) => {
@@ -83,6 +75,24 @@ app.delete('/api/persons/:id', (request, response) => {
         })
         .catch(error => console.log(error))
 })
+
+app.put('/api/persons/:id', (request, response, next) => {
+    const body = request.body
+    const person = {
+        name: body.name,
+        number: body.number
+    }
+
+    Person.findByIdAndUpdate(request.params.id, person, {new: true})
+        .then(updatedPerson => {
+            response.json(updatedPerson)
+        })
+        .catch(error => next(error))
+})
+
+
+app.use(unknownEndpoint)
+app.use(errorHandler)
 
 const PORT = process.env.PORT
 app.listen(PORT, () => {
