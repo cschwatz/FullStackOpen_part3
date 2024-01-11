@@ -33,12 +33,14 @@ app.get('/api/persons', (request, response) => {
 })
 
 app.get('/api/info', (request, response) => {
-    response.send(`
+    Person.countDocuments({}).then(total => {
+        response.send(`
         <div>
-            <p>Phonebook has info for ${persons.length} people</p>
+            <p>Phonebook has info for ${total} people</p>
             <p>${currentTime}</p>
         </div>
     `)
+    })
 })
 
 app.get('/api/persons/:id', (request, response, next) => {
