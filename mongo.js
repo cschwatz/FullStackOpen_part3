@@ -26,7 +26,7 @@ if (process.argv.length === 3 && Person) {
         result.forEach(person => {
             console.log(`${person.name} ${person.number}`)
         })
-    mongoose.connection.close()
+        mongoose.connection.close()
     })
 } else {
     const newPerson = new Person({
@@ -34,7 +34,6 @@ if (process.argv.length === 3 && Person) {
         name: process.argv[3],
         number: process.argv[4]
     })
-    
     newPerson.save().then(result => {
         console.log(`added ${newPerson.name} number ${newPerson.number} to phonebook!`)
         mongoose.connection.close()

@@ -8,22 +8,20 @@ app.use(express.static('dist'))
 app.use(express.json()) //json parser
 
 app.use(morgan(':method :url :status :res[content-length] - :response-time ms :jsonBody'))
-morgan.token('jsonBody', (req, res) => { 
-    return JSON.stringify(req.body) 
-})
+morgan.token('jsonBody', (req, res) => { return JSON.stringify(req.body) })
 
 
 let currentTime = new Date()
 
 const unknownEndpoint = (request, response) => {
-    response.status(404).send({error: 'unknown endpoint'})
+    response.status(404).send({ error: 'unknown endpoint' })
 }
 
 const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
-        return response.status(400).send({error: 'malformatted id'})    
+        return response.status(400).send({ error: 'malformatted id' })
     } else if (error.name === 'ValidationError') {
-        return response.status(400).json({error: error.message})
+        return response.status(400).json({ error: error.message })
     }
     next(error)
 }
@@ -59,7 +57,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 app.post('/api/persons', (request, response, next) => {
     if (!request.body.name || !request.body.number) {
         return response.status(400).json({
-            error: "content missing"
+            error: 'content missing'
         })
     }
     const person = new Person({
@@ -88,7 +86,7 @@ app.put('/api/persons/:id', (request, response, next) => {
         number: body.number
     }
 
-    Person.findByIdAndUpdate(request.params.id, person, {new: true, runValidators: true})
+    Person.findByIdAndUpdate(request.params.id, person, { new: true, runValidators: true })
         .then(updatedPerson => {
             response.json(updatedPerson)
         })
