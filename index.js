@@ -52,13 +52,11 @@ app.get('/api/info', (request, response) => {
 })
 
 app.get('/api/persons/:id', (request, response) => {
-    const id = Number(request.params.id) // request parameters returns a string type
-    const person = persons.find(person => person.id === id)
-    if (person) {
-        response.json(person)
-    } else {
-        response.status(404).end()
-    }
+    const idToFind = Number(request.params.id) // request parameters returns a string type
+    Person.find({id: idToFind})
+        .then(result => response.json(result))
+        .catch(() => response.status(404).end())
+    
 })
 
 app.post('/api/persons', (request, response) => {
@@ -67,21 +65,13 @@ app.post('/api/persons', (request, response) => {
             error: "content missing"
         })
     }
+    const person = new Person({
+        id: Math.floor(Math.random() * 100000),
+        name: request.body.name,
+        number: request.body.number
+    })
 
-    if (persons.find(person => person.name === request.body.name)) {
-        return response.status(400).json({
-            error: "the name is already in the Phonebook"
-        })
-    }
-
-    let newPersonId = Math.floor(Math.random() * 100000)
-    const person = {
-        "id": newPersonId,
-        "name": request.body.name,
-        "number": request.body.number
-    }
-    persons = persons.concat(person)
-    response.json(person)
+    person.save().then(savedPerson => response.json(savedPerson))
 })
 
 app.delete('/api/persons/:id', (request, response) => {
